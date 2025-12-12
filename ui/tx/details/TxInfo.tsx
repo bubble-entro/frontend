@@ -195,7 +195,7 @@ const TxInfo = ({ data, tacOperations, isLoading, socketStatus }: Props) => {
       >
         {
           rollupFeature.isEnabled &&
-          (rollupFeature.type === 'zkEvm' || rollupFeature.type === 'zkSync' || rollupFeature.type === 'arbitrum' || rollupFeature.type === 'scroll') ?
+            (rollupFeature.type === 'zkEvm' || rollupFeature.type === 'zkSync' || rollupFeature.type === 'arbitrum' || rollupFeature.type === 'scroll') ?
             'L2 status and method' :
             'Status and method'
         }
@@ -217,7 +217,7 @@ const TxInfo = ({ data, tacOperations, isLoading, socketStatus }: Props) => {
       </DetailedInfo.ItemValue>
 
       { rollupFeature.isEnabled && rollupFeature.type === 'optimistic' && data.op_withdrawals && data.op_withdrawals.length > 0 &&
-      !config.UI.views.tx.hiddenFields?.L1_status && (
+        !config.UI.views.tx.hiddenFields?.L1_status && (
         <>
           <DetailedInfo.ItemLabel
             hint="Detailed status progress of the transaction"
@@ -536,39 +536,39 @@ const TxInfo = ({ data, tacOperations, isLoading, socketStatus }: Props) => {
       <DetailedInfo.ItemDivider/>
 
       { (data.arbitrum?.commitment_transaction.hash || data.arbitrum?.confirmation_transaction.hash) &&
-      (
-        <>
-          { data.arbitrum?.commitment_transaction.hash && (
-            <>
-              <DetailedInfo.ItemLabel
-                hint="L1 transaction containing this batch commitment"
-                isLoading={ isLoading }
-              >
-                Commitment tx
-              </DetailedInfo.ItemLabel>
-              <DetailedInfo.ItemValue>
-                <TxEntityL1 hash={ data.arbitrum?.commitment_transaction.hash } isLoading={ isLoading }/>
-                { data.arbitrum?.commitment_transaction.status === 'finalized' && <StatusTag type="ok" text="Finalized" ml={ 2 }/> }
-              </DetailedInfo.ItemValue>
-            </>
-          ) }
-          { data.arbitrum?.confirmation_transaction.hash && (
-            <>
-              <DetailedInfo.ItemLabel
-                hint="L1 transaction containing confirmation of this batch"
-                isLoading={ isLoading }
-              >
-                Confirmation tx
-              </DetailedInfo.ItemLabel>
-              <DetailedInfo.ItemValue>
-                <TxEntityL1 hash={ data.arbitrum?.confirmation_transaction.hash } isLoading={ isLoading }/>
-                { data.arbitrum?.commitment_transaction.status === 'finalized' && <StatusTag type="ok" text="Finalized" ml={ 2 }/> }
-              </DetailedInfo.ItemValue>
-            </>
-          ) }
-          <DetailedInfo.ItemDivider/>
-        </>
-      ) }
+        (
+          <>
+            { data.arbitrum?.commitment_transaction.hash && (
+              <>
+                <DetailedInfo.ItemLabel
+                  hint="L1 transaction containing this batch commitment"
+                  isLoading={ isLoading }
+                >
+                  Commitment tx
+                </DetailedInfo.ItemLabel>
+                <DetailedInfo.ItemValue>
+                  <TxEntityL1 hash={ data.arbitrum?.commitment_transaction.hash } isLoading={ isLoading }/>
+                  { data.arbitrum?.commitment_transaction.status === 'finalized' && <StatusTag type="ok" text="Finalized" ml={ 2 }/> }
+                </DetailedInfo.ItemValue>
+              </>
+            ) }
+            { data.arbitrum?.confirmation_transaction.hash && (
+              <>
+                <DetailedInfo.ItemLabel
+                  hint="L1 transaction containing confirmation of this batch"
+                  isLoading={ isLoading }
+                >
+                  Confirmation tx
+                </DetailedInfo.ItemLabel>
+                <DetailedInfo.ItemValue>
+                  <TxEntityL1 hash={ data.arbitrum?.confirmation_transaction.hash } isLoading={ isLoading }/>
+                  { data.arbitrum?.commitment_transaction.status === 'finalized' && <StatusTag type="ok" text="Finalized" ml={ 2 }/> }
+                </DetailedInfo.ItemValue>
+              </>
+            ) }
+            <DetailedInfo.ItemDivider/>
+          </>
+        ) }
 
       { data.zkevm_sequence_hash && (
         <>
@@ -665,6 +665,49 @@ const TxInfo = ({ data, tacOperations, isLoading, socketStatus }: Props) => {
 
       <TxDetailsGasPrice gasPrice={ data.gas_price } gasToken={ data.celo?.gas_token } isLoading={ isLoading }/>
 
+      <DetailedInfo.ItemLabel
+        hint="The gas fee subsidy amount and the granter"
+        isLoading={ isLoading }
+      >
+        Gas Fee Subsidies
+      </DetailedInfo.ItemLabel>
+      <DetailedInfo.ItemValue>
+        { data.gas_fee_grant_info ? (
+          <Flex alignItems="center" flexWrap="wrap">
+            <CurrencyValue
+              value={ data.gas_fee_grant_info.amount }
+              currency={ currencyUnits.ether }
+              exchangeRate={ data.exchange_rate }
+              isLoading={ isLoading }
+            />
+            <Box mx={ 1 }>,</Box>
+            <AddressEntity address={{ hash: data.gas_fee_grant_info.granter }} isLoading={ isLoading }/>
+          </Flex>
+        ) : (
+          <Text>n/a n/a</Text>
+        ) }
+      </DetailedInfo.ItemValue>
+
+      { data.gas_fee_grant_info && (
+        <>
+          <DetailedInfo.ItemLabel
+            hint="The remaining gas fee grant allowance"
+            isLoading={ isLoading }
+          >
+            Gas Grant Remaining
+          </DetailedInfo.ItemLabel>
+          <DetailedInfo.ItemValue>
+            <CurrencyValue
+              value={ data.gas_fee_grant_info.amount }
+              currency={ currencyUnits.ether }
+              exchangeRate={ data.exchange_rate }
+              isLoading={ isLoading }
+              flexWrap="wrap"
+            />
+          </DetailedInfo.ItemValue>
+        </>
+      ) }
+
       <TxDetailsFeePerGas txFee={ data.fee.value } gasUsed={ data.gas_used } isLoading={ isLoading }/>
 
       { !config.UI.views.tx.additionalFields?.set_max_gas_limit && <TxDetailsGasUsage isLoading={ isLoading } data={ data }/> }
@@ -720,7 +763,7 @@ const TxInfo = ({ data, tacOperations, isLoading, socketStatus }: Props) => {
       ) }
 
       { !config.UI.views.tx.hiddenFields?.gas_fees &&
-            (data.base_fee_per_gas || data.max_fee_per_gas || data.max_priority_fee_per_gas) && (
+        (data.base_fee_per_gas || data.max_fee_per_gas || data.max_priority_fee_per_gas) && (
         <>
           <DetailedInfo.ItemLabel
             hint={ `
